@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
-# Define a few command handlers. These usually take the two arguments update and
+# Define a few command handlers. These usually take the two-argument update and
 # context.
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start is issued."""
@@ -76,7 +76,7 @@ async def image_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         keep_upload_photo.is_upload_photo = False
         await typing_task
 
-        logging.error(f"Error generating image: {e}")
+        logger.error(f"Error generating image: {e}")
         await update.message.reply_text("Sorry, there was an error generating your image.")
 
 
@@ -105,6 +105,7 @@ async def gpt_prompt(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
 def main() -> None:
     """Start the bot."""
+    logger.info("Starting the bot...")
     # Create the Application and pass it your bot's token.
     telegram_bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
     application = Application.builder().token(telegram_bot_token).build()
