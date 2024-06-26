@@ -129,6 +129,7 @@ def main() -> None:
     logger.info("Starting the bot...")
     logger.info("GPT Model: %s", GPT_MODEL)
     logger.info("DALL-E Model: %s", DALL_E_MODEL)
+    logger.info("System Prompt: %s", SYSTEM_PROMPT)
     # Create the Application and pass it your bot's token.
     telegram_bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
     application = Application.builder().token(telegram_bot_token).build()
