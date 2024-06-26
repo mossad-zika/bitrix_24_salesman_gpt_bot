@@ -9,11 +9,11 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /app
 
 # Install Python dependencies
-COPY requirements.txt /app/
+COPY ./app/requirements.txt /app
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code into the container
-COPY .. /app/
+COPY ./app/bot.py /app
 
 # Run the application
 CMD ["python", "bot.py"]
