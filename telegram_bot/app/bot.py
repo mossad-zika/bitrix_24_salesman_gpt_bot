@@ -10,16 +10,23 @@ import re
 from openai import OpenAI
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
+from logfmter import Logfmter
 
 # Enable logging
+formatter = Logfmter(
+    keys=["at", "process", "level", "msg"],
+    mapping={"at": "asctime", "process": "processName", "level": "levelname", "msg": "message"},
+    datefmt='%H:%M:%S %d/%m/%Y'
+)
+
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(formatter)
+file_handler = logging.FileHandler("./logs/bot.log")
+file_handler.setFormatter(formatter)
+
 logging.basicConfig(
-    format='timestamp=%(asctime)s logger=%(name)s level=%(levelname)s msg="%(message)s"',
-    datefmt='%Y-%m-%dT%H:%M:%S',
     level=logging.INFO,
-    handlers=[
-        logging.FileHandler("./logs/bot.log"),
-        logging.StreamHandler()
-    ]
+    handlers=[stream_handler, file_handler]
 )
 # set a higher logging level for httpx to avoid all GET and POST requests being logged
 logging.getLogger("httpx").setLevel(logging.WARNING)
