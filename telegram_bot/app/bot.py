@@ -5,6 +5,7 @@ import base64
 from io import BytesIO
 import logging
 import os
+import re
 
 from openai import OpenAI
 from telegram import Update
@@ -32,6 +33,21 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 GPT_MODEL = os.getenv("GPT_MODEL", "gpt-3.5-turbo")
 DALL_E_MODEL = os.getenv("DALL_E_MODEL", "dall-e-3")
 SYSTEM_PROMPT = os.getenv("SYSTEM_PROMPT", "You are a helpful assistant.")
+
+
+def split_into_chunks(text, chunk_size):
+    """
+    Split text into chunks of specified size.
+    """
+    return [text[i:i + chunk_size] for i in range(0, len(text), chunk_size)]
+
+
+def escape_markdown(text: str) -> str:
+    """Helper function to escape telegram markup symbols."""
+
+    escape_chars = r"\_*[]()~>#+-=|{}.!"
+
+    return re.sub(f"([{re.escape(escape_chars)}])", r"\\\1", text)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -117,9 +133,12 @@ async def gpt_prompt(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
         keep_typing.is_typing = False
 
-        ai_response = response.choices[0].message.content
-        await update.message.reply_text(ai_response,
-                                        reply_to_message_id=update.message.message_id)
+        ai_response = escape_markdown(response.choices[0].message.content)
+        ai_response_chunks = split_into_chunks(ai_response.strip(), 4096)
+        for chunk in ai_response_chunks:
+            await update.message.reply_text(chunk,
+                                            reply_to_message_id=update.message.message_id,
+                                            parse_mode="MarkdownV2")
 
     except Exception as e:
         keep_typing.is_typing = False
