@@ -1,6 +1,7 @@
 volumes:
   bot_log_share: {}
   loki_stora_data: {}
+  postgres_data: {}
 
 services:
   telegram-bot:
@@ -32,3 +33,25 @@ services:
       - bot_log_share:/logs
       - ./promtail/config.yml:/etc/promtail/config.yml
     command: -config.file=/etc/promtail/config.yml
+
+  liquibase:
+    build: ./liquibase
+    command: [
+      "--changeLogFile=initial.postgres.yaml",
+      "--url=jdbc:postgresql://${DB_HOST}:${DB_INTERNAL_PORT}/${POSTGRES_DB}",
+      "update"
+    ]
+    environment:
+      LIQUIBASE_COMMAND_USERNAME: ${POSTGRES_USER}
+      LIQUIBASE_COMMAND_PASSWORD: ${POSTGRES_PASSWORD}
+
+  postgres:
+    image: postgres:16.3
+    ports:
+      - "${DB_EXTERNAL_PORT}:${DB_INTERNAL_PORT}"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data

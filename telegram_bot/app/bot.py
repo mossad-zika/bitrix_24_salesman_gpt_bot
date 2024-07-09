@@ -11,6 +11,7 @@ from openai import OpenAI
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 from logfmter import Logfmter
+import asyncpg
 
 # Enable logging
 formatter = Logfmter(
@@ -40,6 +41,24 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 GPT_MODEL = os.getenv("GPT_MODEL", "gpt-3.5-turbo")
 DALL_E_MODEL = os.getenv("DALL_E_MODEL", "dall-e-3")
 SYSTEM_PROMPT = os.getenv("SYSTEM_PROMPT", "You are a helpful assistant.")
+
+
+async def db_connect():
+    return await asyncpg.connect(user=os.getenv("POSTGRES_USER"),
+                                 password=os.getenv("POSTGRES_PASSWORD"),
+                                 database=os.getenv("POSTGRES_DB"),
+                                 port=os.getenv("POSTGRES_PORT"),
+                                 host=os.getenv("DB_HOST"))
+
+
+async def is_user_allowed(user_id: int) -> bool:
+    conn = await db_connect()
+    try:
+        existing_user = await conn.fetchval("SELECT user_id FROM allowed_users WHERE user_id = $1",
+                                            user_id)
+        return existing_user is not None
+    finally:
+        await conn.close()
 
 
 def split_into_chunks(text, chunk_size):
