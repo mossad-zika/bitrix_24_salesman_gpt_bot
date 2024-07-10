@@ -5,6 +5,14 @@ volumes:
 
 services:
   telegram-bot:
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      DB_HOST: ${DB_HOST}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      IMAGE_PRICE: ${IMAGE_PRICE}
     build:
       context: ./telegram_bot
     volumes:
