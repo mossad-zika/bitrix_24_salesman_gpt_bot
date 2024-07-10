@@ -87,6 +87,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 async def generate_image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Generate an image based on a prompt and send it back to the user as an image."""
     user = update.effective_user
+
     if not context.args:
         logger.error(f"User {user.id} ({user.username}) did not provide a prompt for the /image command.")
         await update.message.reply_text("Please provide a description for the image after the /image command.",
@@ -95,6 +96,12 @@ async def generate_image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
     prompt = ' '.join(context.args)
     logging.info(f"User {user.id} ({user.username}) requested an image with prompt: '{prompt}'")
+
+    if not await is_user_allowed(user.id):
+        logger.info("User %s (%s) tried to generate an image but is not allowed.", user.id, user.username)
+        await update.message.reply_text("Sorry, you are not allowed to generate images.",
+                                        reply_to_message_id=update.message.message_id)
+        return
 
     async def keep_upload_photo():
         while keep_upload_photo.is_upload_photo:
@@ -143,6 +150,12 @@ async def gpt_prompt(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     user_message = update.message.text
     user = update.effective_user
     logging.info(f"User {user.id} ({user.username}) requested sent text: '{user_message}'")
+
+    if not await is_user_allowed(user.id):
+        logger.info("User %s (%s) tried to use GPT prompt but is not allowed.", user.id, user.username)
+        await update.message.reply_text("Sorry, you are not allowed to text with me.",
+                                        reply_to_message_id=update.message.message_id)
+        return
 
     async def keep_typing():
         while keep_typing.is_typing:
