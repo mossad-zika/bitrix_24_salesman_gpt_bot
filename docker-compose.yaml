@@ -14,8 +14,6 @@ services:
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
     build:
       context: ./telegram_bot
-    env_file:
-      - ./telegram_bot/.env
     volumes:
       - bot_log_share:/app/logs
 
