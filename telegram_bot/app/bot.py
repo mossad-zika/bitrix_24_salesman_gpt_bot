@@ -14,8 +14,8 @@ from logfmter import Logfmter
 
 # Enable logging
 formatter = Logfmter(
-    keys=["at", "process", "level", "msg"],
-    mapping={"at": "asctime", "process": "processName", "level": "levelname", "msg": "message"},
+    keys=["at", "logger", "level", "msg"],
+    mapping={"at": "asctime", "logger": "name", "level": "levelname", "msg": "message"},
     datefmt='%H:%M:%S %d/%m/%Y'
 )
 
