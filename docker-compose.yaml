@@ -1,6 +1,7 @@
 volumes:
   bot_log_share: {}
   loki_stora_data: {}
+  postgres_data: {}
 
 services:
   telegram-bot:
@@ -8,6 +9,11 @@ services:
       context: ./telegram_bot
     env_file:
       - ./telegram_bot/.env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      DB_HOST: ${DB_HOST}
     volumes:
       - bot_log_share:/app/logs
 
@@ -32,3 +38,31 @@ services:
       - bot_log_share:/logs
       - ./promtail/config.yml:/etc/promtail/config.yml
     command: -config.file=/etc/promtail/config.yml
+
+  liquibase:
+    depends_on:
+      postgres:
+        condition: service_healthy
+    build: ./liquibase
+    command: [
+      "--changeLogFile=initial.postgres.yaml",
+      "--url=jdbc:postgresql://${DB_HOST}:${DB_INTERNAL_PORT}/${POSTGRES_DB}",
+      "update"
+    ]
+    environment:
+      LIQUIBASE_COMMAND_USERNAME: ${POSTGRES_USER}
+      LIQUIBASE_COMMAND_PASSWORD: ${POSTGRES_PASSWORD}
+
+  postgres:
+    image: postgres:16.3
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      start_period: 1s # How long to wait before running the first healthcheck
+    ports:
+      - "${DB_EXTERNAL_PORT}:${DB_INTERNAL_PORT}"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
