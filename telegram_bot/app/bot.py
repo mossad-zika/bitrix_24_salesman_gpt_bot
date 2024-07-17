@@ -146,17 +146,18 @@ async def generate_image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
         if hasattr(response, 'data') and len(response.data) > 0:
             conn = await db_connect()
-            try:
-                await conn.execute(
-                    "UPDATE user_balances SET balance = balance - $1, "
-                    "images_generated = images_generated + 1 WHERE user_id = $2",
-                    IMAGE_PRICE, user.id
-                )
-                logger.info(f"Image generated for user {user.id}. Balance deducted by {IMAGE_PRICE}.")
-            finally:
-                await conn.close()
-                await update.message.reply_photo(photo=BytesIO(base64.b64decode(response.data[0].b64_json)))
-                logging.info(f"Successfully generated an image for prompt: '{prompt}'")
+            await conn.execute(
+                """
+                UPDATE user_balances SET balance = balance - $1,
+                images_generated = images_generated + 1
+                WHERE user_id = $2
+                """,
+                IMAGE_PRICE, user.id
+            )
+            logger.info(f"Image generated for user {user.id}. Balance deducted by {IMAGE_PRICE}.")
+            await conn.close()
+            await update.message.reply_photo(photo=BytesIO(base64.b64decode(response.data[0].b64_json)))
+            logging.info(f"Successfully send an image for prompt: '{prompt}'")
         else:
             await update.message.reply_text("Sorry, the image generation did not succeed.",
                                             reply_to_message_id=update.message.message_id)
@@ -166,7 +167,6 @@ async def generate_image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         keep_upload_photo.is_upload_photo = False
         await typing_task
 
-        logger.error(f"Error generating image: {e}")
         logging.error(f"Error generating image for prompt: '{prompt}': {e}")
         await update.message.reply_text("Sorry, there was an error generating your image.",
                                         reply_to_message_id=update.message.message_id)
