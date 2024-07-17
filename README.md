@@ -26,3 +26,6 @@ psql -U $POSTGRES_USER \
 -d $POSTGRES_DB \
 -c "INSERT INTO allowed_users (user_id) VALUES (105013941);"
 ```
+
+### Mentor notes
+- Replace "Successfully **generated** an image" text with "Successfully **send** an image" in early versions
