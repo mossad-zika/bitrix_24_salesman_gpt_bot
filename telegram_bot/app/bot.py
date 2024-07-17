@@ -41,7 +41,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 GPT_MODEL = os.getenv("GPT_MODEL", "gpt-3.5-turbo")
 DALL_E_MODEL = os.getenv("DALL_E_MODEL", "dall-e-3")
 SYSTEM_PROMPT = os.getenv("SYSTEM_PROMPT", "You are a helpful assistant.")
-IMAGE_PRICE = os.getenv("IMAGE_PRICE", 1)
+IMAGE_PRICE = float(os.getenv("IMAGE_PRICE", 1))
 
 
 async def is_enough_balance_for_image(user_id: int) -> (bool, float):
@@ -118,6 +118,12 @@ async def generate_image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         logger.info("User %s (%s) tried to generate an image but is not allowed.", user.id, user.username)
         await update.message.reply_text("Sorry, you are not allowed to generate images.",
                                         reply_to_message_id=update.message.message_id)
+        return
+
+    has_enough_balance, current_balance = await is_enough_balance_for_image(user.id)
+    if not has_enough_balance:
+        await update.message.reply_text(
+            f"Sorry, your current balance ({current_balance}₪) is not enough to generate an image. Price per image is {IMAGE_PRICE}₪.")
         return
 
     async def keep_upload_photo():
