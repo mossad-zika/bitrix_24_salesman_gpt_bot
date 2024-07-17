@@ -41,6 +41,23 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 GPT_MODEL = os.getenv("GPT_MODEL", "gpt-3.5-turbo")
 DALL_E_MODEL = os.getenv("DALL_E_MODEL", "dall-e-3")
 SYSTEM_PROMPT = os.getenv("SYSTEM_PROMPT", "You are a helpful assistant.")
+IMAGE_PRICE = os.getenv("IMAGE_PRICE", 1)
+
+
+async def is_enough_balance_for_image(user_id: int) -> (bool, float):
+    """
+    Checks if the user has balance to generate an image.
+    Returns a tuple (bool, float) where bool indicates if the user has enough currency,
+    and float represents the current balance of the user.
+    """
+    conn = await db_connect()
+    try:
+        current_balance = await conn.fetchval("SELECT balance FROM user_balances WHERE user_id = $1", user_id)
+        if current_balance is None:  # This means the user does not exist in the user_balances table
+            return False, 0.0
+        return current_balance >= IMAGE_PRICE, current_balance
+    finally:
+        await conn.close()
 
 
 async def db_connect():
@@ -128,8 +145,18 @@ async def generate_image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         await typing_task
 
         if hasattr(response, 'data') and len(response.data) > 0:
-            await update.message.reply_photo(photo=BytesIO(base64.b64decode(response.data[0].b64_json)))
-            logging.info(f"Successfully generated an image for prompt: '{prompt}'")
+            conn = await db_connect()
+            try:
+                await conn.execute(
+                    "UPDATE user_balances SET balance = balance - $1, "
+                    "images_generated = images_generated + 1 WHERE user_id = $2",
+                    IMAGE_PRICE, user.id
+                )
+                logger.info(f"Image generated for user {user.id}. Balance deducted by {IMAGE_PRICE}.")
+            finally:
+                await conn.close()
+                await update.message.reply_photo(photo=BytesIO(base64.b64decode(response.data[0].b64_json)))
+                logging.info(f"Successfully generated an image for prompt: '{prompt}'")
         else:
             await update.message.reply_text("Sorry, the image generation did not succeed.",
                                             reply_to_message_id=update.message.message_id)
