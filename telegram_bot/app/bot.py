@@ -184,6 +184,11 @@ async def gpt_prompt(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     user = update.effective_user
     logging.info(f"User {user.id} ({user.username}) requested sent text: '{user_message}'")
 
+    if update.message.chat.type in ['group', 'supergroup']:
+        if not update.message.text.startswith(f"@{context.bot.username}"):
+            logger.info("Ignoring message without mention in group chat")
+            return
+
     if not await is_user_allowed(user.id):
         logger.info("User %s (%s) tried to use GPT prompt but is not allowed.", user.id, user.username)
         await update.message.reply_text("Sorry, you are not allowed to text with me.",
