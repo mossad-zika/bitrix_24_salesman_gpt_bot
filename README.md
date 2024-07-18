@@ -27,5 +27,10 @@ psql -U $POSTGRES_USER \
 -c "INSERT INTO allowed_users (user_id) VALUES (105013941);"
 ```
 
+### Add user to allowed via curl
+```bash
+curl 'http://localhost:5005/allow' -v --location --data-raw 'user_id=105013941'
+```
+
 ### Mentor notes
 - Replace "Successfully **generated** an image" text with "Successfully **send** an image" in early versions
