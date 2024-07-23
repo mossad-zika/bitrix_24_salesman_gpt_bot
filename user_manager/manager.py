@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
+from flask_bootstrap import Bootstrap
 import psycopg2
 import os
 
 app = Flask(__name__, template_folder='templates')
+Bootstrap(app)
 app.secret_key = os.getenv("FLASK_SECRET_KEY")
 
 
