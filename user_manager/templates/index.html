@@ -29,12 +29,14 @@
         <button type="submit" class="btn btn-success">Allow User</button>
     </form>
 
-    <div class="mt-5"><h3>Allowed Users</h3>
+    <div class="mt-5">
+        <h3>Allowed Users</h3>
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th scope="col">User ID</th>
                     <th scope="col">Balance</th>
+                    <th scope="col">Images Generated</th>
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
@@ -43,14 +45,19 @@
                     <tr>
                         <td>{{ user[0] }}</td>
                         <td>{{ user[1] }}</td>
+                        <td>{{ user[2] }}</td>
                         <td>
                             <form action="{{ url_for('disable_user') }}" method="post" class="d-inline">
                                 <input type="hidden" name="user_id" value="{{ user[0] }}">
                                 <button type="submit" class="btn btn-danger btn-sm">Disable</button>
                             </form>
                             <form action="{{ url_for('set_balance') }}" method="post" class="d-inline">
-                                <input type="hidden" name="user_id" value="{{ user[0] }}">
-                                <input type="number" name="balance" class="form-control d-inline w-auto" placeholder="Balance" required>
+                                <label>
+                                    <input type="hidden" name="user_id" value="{{ user[0] }}">
+                                </label>
+                                <label>
+                                    <input type="number" name="balance" class="form-control d-inline w-auto" placeholder="Balance" required>
+                                </label>
                                 <button type="submit" class="btn btn-primary btn-sm">Set Balance</button>
                             </form>
                         </td>

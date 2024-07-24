@@ -20,9 +20,8 @@ def index():
     conn = get_db_connection()
     cur = conn.cursor()
 
-    # Join allowed_users and user_balances
     cur.execute("""
-        SELECT au.user_id, ub.balance
+        SELECT au.user_id, ub.balance, COALESCE(ub.images_generated, 0) AS images_generated
         FROM allowed_users au
         LEFT JOIN user_balances ub ON au.user_id = ub.user_id
         ORDER BY au.user_id
@@ -31,6 +30,7 @@ def index():
     cur.close()
     conn.close()
     return render_template('index.html', allowed_users=allowed_users)
+
 
 
 @app.route('/allow', methods=['POST'])
