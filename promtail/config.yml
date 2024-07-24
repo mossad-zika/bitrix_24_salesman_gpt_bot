@@ -13,3 +13,9 @@ scrape_configs:
           - localhost
         labels:
           __path__: /logs/bot.log
+  - job_name: user-manager
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          __path__: /logs/manager.log

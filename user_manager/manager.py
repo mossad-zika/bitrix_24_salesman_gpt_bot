@@ -1,10 +1,33 @@
+import os
+import logging
+
 from flask import Flask, render_template, request, redirect, url_for, flash
 import psycopg2
-import os
+from logfmter import Logfmter
 
 app = Flask(__name__, template_folder='templates')
 app.secret_key = os.getenv("FLASK_SECRET_KEY")
 
+# Enable logging
+formatter = Logfmter(
+    keys=["at", "logger", "level", "msg"],
+    mapping={"at": "asctime", "logger": "name", "level": "levelname", "msg": "message"},
+    datefmt='%H:%M:%S %d/%m/%Y'
+)
+
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(formatter)
+file_handler = logging.FileHandler("./logs/manager.log")
+file_handler.setFormatter(formatter)
+
+logging.basicConfig(
+    level=logging.INFO,
+    handlers=[stream_handler, file_handler]
+)
+# set a higher logging level for httpx to avoid all GET and POST requests being logged
+logging.getLogger("httpx").setLevel(logging.WARNING)
+
+logger = logging.getLogger(__name__)
 
 def get_db_connection():
     conn = psycopg2.connect(

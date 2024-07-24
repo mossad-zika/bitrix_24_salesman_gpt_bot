@@ -18,6 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
+  "id": 1,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -145,7 +146,7 @@
           }
         ]
       },
-      "pluginVersion": "10.2.0",
+      "pluginVersion": "11.1.0",
       "targets": [
         {
           "datasource": {
@@ -191,13 +192,13 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 38,
+  "schemaVersion": 39,
   "tags": [],
   "templating": {
     "list": [
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "Loki Local",
           "value": "P639F1043A754246A"
         },
@@ -207,6 +208,7 @@
         "name": "datasource",
         "options": [],
         "query": "loki",
+        "queryValue": "",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -214,7 +216,7 @@
       },
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "/logs/bot.log",
           "value": "/logs/bot.log"
         },
@@ -235,7 +237,7 @@
           "stream": "",
           "type": 1
         },
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
@@ -264,13 +266,13 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Telegram Bot Logs",
+  "title": "Telegram Bot and User Manager Logs",
   "uid": "f4df65a2-4129-4f66-b955-e2f9a1a2578f",
-  "version": 4,
+  "version": 1,
   "weekStart": ""
 }
