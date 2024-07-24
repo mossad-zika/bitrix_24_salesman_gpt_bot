@@ -30,7 +30,6 @@ def index():
     allowed_users = cur.fetchall()
     cur.close()
     conn.close()
-
     return render_template('index.html', allowed_users=allowed_users)
 
 
