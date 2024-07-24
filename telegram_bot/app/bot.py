@@ -122,6 +122,7 @@ async def generate_image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
     has_enough_balance, current_balance = await is_enough_balance_for_image(user.id)
     if not has_enough_balance:
+        logger.error(f"User {user.id} ({user.username}) does not have enough balance to generate an image.")
         await update.message.reply_text(
             f"Sorry, your current balance ({current_balance}₪) is not enough to generate an image. Price per image is {IMAGE_PRICE}₪.")
         return

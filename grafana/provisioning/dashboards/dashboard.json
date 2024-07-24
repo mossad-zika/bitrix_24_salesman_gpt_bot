@@ -38,7 +38,7 @@
               "type": "color-text"
             },
             "filterable": true,
-            "inspect": true
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -109,12 +109,38 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "process"
+              "options": "timestamp"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 192
+                "value": 221
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "logger"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 228
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "message"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "auto"
+                }
               }
             ]
           }
@@ -142,7 +168,7 @@
         "sortBy": [
           {
             "desc": true,
-            "displayName": "Time"
+            "displayName": "timestamp"
           }
         ]
       },
@@ -159,7 +185,7 @@
           "refId": "A"
         }
       ],
-      "title": "Telegram Bot Logs",
+      "title": "Application Logs",
       "transformations": [
         {
           "id": "extractFields",
@@ -175,15 +201,18 @@
               "22": false,
               "Line": true,
               "Time": true,
+              "at": false,
               "id": true,
               "labels": true,
-              "tsNs": true
+              "tsNs": false
             },
+            "includeByName": {},
             "indexByName": {},
             "renameByName": {
               "at": "Time",
               "msg": "message",
-              "process": ""
+              "process": "",
+              "tsNs": "timestamp"
             }
           }
         }
@@ -198,7 +227,7 @@
     "list": [
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "Loki Local",
           "value": "P639F1043A754246A"
         },
@@ -216,7 +245,7 @@
       },
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "/logs/bot.log",
           "value": "/logs/bot.log"
         },
@@ -245,7 +274,7 @@
       },
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "",
           "value": ""
         },
@@ -266,13 +295,13 @@
     ]
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Telegram Bot and User Manager Logs",
   "uid": "f4df65a2-4129-4f66-b955-e2f9a1a2578f",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }
