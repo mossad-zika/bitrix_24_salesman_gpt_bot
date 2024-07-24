@@ -21,7 +21,7 @@ def index():
     cur = conn.cursor()
 
     cur.execute("""
-        SELECT au.user_id, ub.balance, COALESCE(ub.images_generated, 0) AS images_generated
+        SELECT au.user_id, ub.balance, ub.images_generated AS images_generated
         FROM allowed_users au
         LEFT JOIN user_balances ub ON au.user_id = ub.user_id
         ORDER BY au.user_id
