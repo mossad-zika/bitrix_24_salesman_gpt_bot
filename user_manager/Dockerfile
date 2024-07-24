@@ -15,4 +15,4 @@ COPY templates/ templates/
 COPY manager.py .
 
 # Specify the command to run on container start
-CMD ["flask", "run", "--host=0.0.0.0"]
+ENTRYPOINT ["flask", "run", "--host=0.0.0.0"]
