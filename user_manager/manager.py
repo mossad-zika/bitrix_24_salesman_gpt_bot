@@ -32,7 +32,6 @@ def index():
     return render_template('index.html', allowed_users=allowed_users)
 
 
-
 @app.route('/allow', methods=['POST'])
 def allow_user():
     user_id = request.form.get('user_id')
