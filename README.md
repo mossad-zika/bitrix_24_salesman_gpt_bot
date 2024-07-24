@@ -34,3 +34,7 @@ curl 'http://localhost:5005/allow' -v --location --data-raw 'user_id=105013941'
 
 ### Mentor notes
 - Replace "Successfully **generated** an image" text with "Successfully **send** an image" in early versions
+- Fix CMD to ENTRYPOINT in early versions
+- Fix `logging.info() and logging.error()` to `logger.info() and logger.error()` in early versions
+- Fix user-manager WORKDIR in early versions
+
