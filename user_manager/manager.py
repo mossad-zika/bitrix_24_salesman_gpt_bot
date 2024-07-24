@@ -19,10 +19,20 @@ def get_db_connection():
 def index():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT user_id FROM allowed_users ORDER BY user_id")
+
+    # Join allowed_users and user_balances
+    cur.execute("""
+        SELECT au.user_id, ub.balance
+        FROM allowed_users au
+        LEFT JOIN user_balances ub ON au.user_id = ub.user_id
+        ORDER BY au.user_id
+    """)
+
     allowed_users = cur.fetchall()
+
     cur.close()
     conn.close()
+
     return render_template('index.html', allowed_users=allowed_users)
 
 
@@ -60,6 +70,35 @@ def disable_user():
             cur.execute("DELETE FROM allowed_users WHERE user_id = %s", (user_id,))
             conn.commit()
             flash(f"User {user_id} access revoked.", 'warning')
+    finally:
+        cur.close()
+        conn.close()
+    return redirect(url_for('index'))
+
+
+@app.route('/set_balance', methods=['POST'])
+def set_balance():
+    user_id = request.form.get('user_id')
+    balance = request.form.get('balance')
+    conn = get_db_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("SELECT user_id FROM allowed_users WHERE user_id = %s", (user_id,))
+        existing_user = cur.fetchone()
+        if not existing_user:
+            flash(f"User {user_id} is not currently allowed.", 'info')
+        else:
+            cur.execute(
+                """
+                INSERT INTO user_balances (user_id, balance, images_generated)
+                VALUES (%s, %s, 0)
+                ON CONFLICT (user_id)
+                DO UPDATE SET balance = EXCLUDED.balance
+                """,
+                (user_id, balance)
+            )
+            conn.commit()
+            flash(f"User {user_id} balance has been set to {balance}.", 'success')
     finally:
         cur.close()
         conn.close()
