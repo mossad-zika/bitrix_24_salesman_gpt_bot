@@ -27,9 +27,7 @@ def index():
         LEFT JOIN user_balances ub ON au.user_id = ub.user_id
         ORDER BY au.user_id
     """)
-
     allowed_users = cur.fetchall()
-
     cur.close()
     conn.close()
 
