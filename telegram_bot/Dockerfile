@@ -16,4 +16,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY ./app/bot.py /app
 
 # Run the application
-CMD ["python", "bot.py"]
+ENTRYPOINT ["python", "bot.py"]
