@@ -112,7 +112,7 @@ async def generate_image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         return
 
     prompt = ' '.join(context.args)
-    logging.info(f"User {user.id} ({user.username}) requested an image with prompt: '{prompt}'")
+    logger.info(f"User {user.id} ({user.username}) requested an image with prompt: '{prompt}'")
 
     if not await is_user_allowed(user.id):
         logger.info("User %s (%s) tried to generate an image but is not allowed.", user.id, user.username)
@@ -163,11 +163,11 @@ async def generate_image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             logger.info(f"Image generated for user {user.id}. Balance deducted by {IMAGE_PRICE}.")
             await conn.close()
             await update.message.reply_photo(photo=BytesIO(base64.b64decode(response.data[0].b64_json)))
-            logging.info(f"Successfully send an image for prompt: '{prompt}'")
+            logger.info(f"Successfully send an image for prompt: '{prompt}'")
         else:
             await update.message.reply_text("Sorry, the image generation did not succeed.",
                                             reply_to_message_id=update.message.message_id)
-            logging.error(f"Failed to generate image for prompt: '{prompt}'")
+            logger.error(f"Failed to generate image for prompt: '{prompt}'")
 
     except Exception as e:
         keep_upload_photo.is_upload_photo = False
@@ -182,7 +182,7 @@ async def gpt_prompt(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     """Generate a response to the user's text message using GPT."""
     user_message = update.message.text
     user = update.effective_user
-    logging.info(f"User {user.id} ({user.username}) requested sent text: '{user_message}'")
+    logger.info(f"User {user.id} ({user.username}) requested sent text: '{user_message}'")
 
     if update.message.chat.type in ['group', 'supergroup']:
         if not update.message.text.startswith(f"@{context.bot.username}"):
@@ -219,7 +219,7 @@ async def gpt_prompt(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
         keep_typing.is_typing = False
 
         ai_response = escape_markdown(response.choices[0].message.content)
-        logging.info(f"Response for user {user.id} ({user.username}): '{ai_response.strip()}'")
+        logger.info(f"Response for user {user.id} ({user.username}): '{ai_response.strip()}'")
         ai_response_chunks = split_into_chunks(ai_response.strip(), 4096)
         for chunk in ai_response_chunks:
             await update.message.reply_text(chunk,
