@@ -1,5 +1,5 @@
 volumes:
-  bot_log_share: {}
+  log_share: {}
   loki_stora_data: {}
   postgres_data: {}
 
@@ -15,7 +15,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       DB_HOST: ${DB_HOST}
     volumes:
-      - bot_log_share:/app/logs
+      - log_share:/app/logs
 
   # http://loki-local:3100
   loki-local:
@@ -35,7 +35,7 @@ services:
   promtail:
     image: grafana/promtail:2.9.8
     volumes:
-      - bot_log_share:/logs
+      - log_share:/logs
       - ./promtail/config.yml:/etc/promtail/config.yml
     command: -config.file=/etc/promtail/config.yml
 
@@ -82,3 +82,5 @@ services:
       - "5005:5000"
     depends_on:
       - postgres
+    volumes:
+      - log_share:/app/logs

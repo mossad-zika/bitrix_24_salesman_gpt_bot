@@ -18,6 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
+  "id": 1,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -37,7 +38,7 @@
               "type": "color-text"
             },
             "filterable": true,
-            "inspect": true
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -108,12 +109,38 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "process"
+              "options": "timestamp"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 192
+                "value": 221
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "logger"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 228
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "message"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "auto"
+                }
               }
             ]
           }
@@ -141,11 +168,11 @@
         "sortBy": [
           {
             "desc": true,
-            "displayName": "Time"
+            "displayName": "timestamp"
           }
         ]
       },
-      "pluginVersion": "10.2.0",
+      "pluginVersion": "11.1.0",
       "targets": [
         {
           "datasource": {
@@ -158,7 +185,7 @@
           "refId": "A"
         }
       ],
-      "title": "Telegram Bot Logs",
+      "title": "Application Logs",
       "transformations": [
         {
           "id": "extractFields",
@@ -174,15 +201,18 @@
               "22": false,
               "Line": true,
               "Time": true,
+              "at": false,
               "id": true,
               "labels": true,
-              "tsNs": true
+              "tsNs": false
             },
+            "includeByName": {},
             "indexByName": {},
             "renameByName": {
               "at": "Time",
               "msg": "message",
-              "process": ""
+              "process": "",
+              "tsNs": "timestamp"
             }
           }
         }
@@ -191,7 +221,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 38,
+  "schemaVersion": 39,
   "tags": [],
   "templating": {
     "list": [
@@ -207,6 +237,7 @@
         "name": "datasource",
         "options": [],
         "query": "loki",
+        "queryValue": "",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -235,7 +266,7 @@
           "stream": "",
           "type": 1
         },
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
@@ -243,7 +274,7 @@
       },
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "",
           "value": ""
         },
@@ -269,8 +300,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Telegram Bot Logs",
+  "title": "Telegram Bot and User Manager Logs",
   "uid": "f4df65a2-4129-4f66-b955-e2f9a1a2578f",
-  "version": 4,
+  "version": 2,
   "weekStart": ""
 }
