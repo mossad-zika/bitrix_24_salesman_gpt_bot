@@ -4,8 +4,6 @@ import asyncio
 import base64
 import logging
 import os
-import re
-from io import BytesIO
 
 import asyncpg
 from logfmter import Logfmter
