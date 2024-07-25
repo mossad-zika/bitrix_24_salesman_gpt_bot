@@ -8,8 +8,8 @@ import os
 from openai import OpenAI
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
-import asyncpg
 from logfmter import Logfmter
+import asyncpg
 import telegramify_markdown
 from telegramify_markdown import customize
 
