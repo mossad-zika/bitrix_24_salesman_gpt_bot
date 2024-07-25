@@ -2,16 +2,22 @@
 
 import asyncio
 import base64
-from io import BytesIO
 import logging
 import os
 import re
+from io import BytesIO
 
+import asyncpg
+from logfmter import Logfmter
 from openai import OpenAI
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
-from logfmter import Logfmter
-import asyncpg
+import telegramify_markdown
+from telegramify_markdown import customize
+
+customize.markdown_symbol.head_level_1 = "📌"
+customize.markdown_symbol.link = "🔗"
+customize.strict_markdown = True
 
 # Enable logging
 formatter = Logfmter(
@@ -83,14 +89,6 @@ def split_into_chunks(text, chunk_size):
     Split text into chunks of specified size.
     """
     return [text[i:i + chunk_size] for i in range(0, len(text), chunk_size)]
-
-
-def escape_markdown(text: str) -> str:
-    """Helper function to escape telegram markup symbols."""
-
-    escape_chars = r"\_*[]()~>#+-=|{}.!"
-
-    return re.sub(f"([{re.escape(escape_chars)}])", r"\\\1", text)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -219,13 +217,36 @@ async def gpt_prompt(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
         keep_typing.is_typing = False
 
-        ai_response = escape_markdown(response.choices[0].message.content)
+        ai_response = response.choices[0].message.content
+
         logger.info(f"Response for user {user.id} ({user.username}): '{ai_response.strip()}'")
         ai_response_chunks = split_into_chunks(ai_response.strip(), 4096)
+
         for chunk in ai_response_chunks:
-            await update.message.reply_text(chunk,
-                                            reply_to_message_id=update.message.message_id,
-                                            parse_mode="MarkdownV2")
+            try:
+                formatted_chunk = telegramify_markdown.markdownify(
+                    chunk,
+                    max_line_length=None,
+                    normalize_whitespace=False
+                )
+                await update.message.reply_text(formatted_chunk,
+                                                reply_to_message_id=update.message.message_id,
+                                                parse_mode="MarkdownV2")
+            except Exception as markdown_error:
+                logger.error("Error sending AI response as MarkdownV2: %s, "
+                             "fallback to reply_text without parse_mode",
+                             markdown_error)
+                try:
+                    await update.message.reply_text(
+                        chunk,
+                        reply_to_message_id=update.message.message_id,
+                    )
+                except Exception as e:
+                    logger.error("Error sending AI response even without parse_mode: %s", e)
+                    await update.message.reply_text(
+                        "Sorry, I couldn't send you reply at the moment.",
+                        reply_to_message_id=update.message.message_id
+                    )
 
     except Exception as e:
         keep_typing.is_typing = False
