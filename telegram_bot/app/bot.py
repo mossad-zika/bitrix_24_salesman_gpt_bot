@@ -5,14 +5,15 @@ import base64
 import logging
 import os
 
-import asyncpg
-from logfmter import Logfmter
 from openai import OpenAI
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
+import asyncpg
+from logfmter import Logfmter
 import telegramify_markdown
 from telegramify_markdown import customize
 
+# Configure telegramify_markdown
 customize.markdown_symbol.head_level_1 = "📌"
 customize.markdown_symbol.link = "🔗"
 customize.strict_markdown = True
