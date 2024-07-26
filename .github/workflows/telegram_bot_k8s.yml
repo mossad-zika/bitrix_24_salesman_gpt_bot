@@ -32,11 +32,11 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-        working-directory: ./telegram_bot
+        working-directory: ./telegram_bot/app
 
       - name: Analysing the code with pylint
         run: |
-          pylint ./telegram_bot        
+          pylint ./telegram_bot/app    
 
   build_and_push:
 #    needs:
