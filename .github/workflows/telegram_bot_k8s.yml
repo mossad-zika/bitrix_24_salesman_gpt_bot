@@ -1,4 +1,4 @@
-name: Telegram Bot Build and Push Docker Image
+name: Telegram Bot CI
 
 on:
   workflow_dispatch:
