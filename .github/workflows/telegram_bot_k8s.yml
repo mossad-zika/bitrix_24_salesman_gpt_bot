@@ -40,6 +40,8 @@ jobs:
         working-directory: ./telegram_bot/app
 
   build_and_push:
+#    needs:
+#      - pylint
     permissions:
       contents: read
       packages: write
