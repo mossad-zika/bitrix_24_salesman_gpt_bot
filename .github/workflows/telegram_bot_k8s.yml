@@ -36,7 +36,8 @@ jobs:
 
       - name: Analysing the code with pylint
         run: |
-          pylint ./telegram_bot/app    
+          pylint bot.py
+        working-directory: ./telegram_bot/app
 
   build_and_push:
 #    needs:
