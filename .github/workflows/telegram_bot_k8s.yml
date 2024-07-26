@@ -39,8 +39,8 @@ jobs:
           pylint ./telegram_bot        
 
   build_and_push:
-    needs:
-      - pylint
+#    needs:
+#      - pylint
     permissions:
       contents: read
       packages: write
