@@ -3,9 +3,7 @@ name: AI Code Reviewer
 on:
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pull-requests: write
+permissions: write-all
 
 
 jobs:
