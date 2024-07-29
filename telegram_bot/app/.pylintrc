@@ -2,4 +2,4 @@
 max-line-length=110
 
 [MESSAGES CONTROL]
-disable=broad-exception-caught
+disable=broad-exception-caught, unused-argument
