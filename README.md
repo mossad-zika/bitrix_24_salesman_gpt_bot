@@ -37,4 +37,6 @@ curl 'http://localhost:5005/allow' -v --location --data-raw 'user_id=105013941'
 - Fix CMD to ENTRYPOINT in early versions
 - Fix `logging.info() and logging.error()` to `logger.info() and logger.error()` in early versions
 - Fix user-manager WORKDIR in early versions
+- Update Python
+- User-Manager: add 'app' dir like it is done with a bot
 
