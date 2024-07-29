@@ -3,8 +3,9 @@ name: AI Code Reviewer
 on:
   workflow_dispatch:
 
-permissions: write-all
-
+#permissions:
+#  contents: read
+#  pull-requests: write
 
 jobs:
   review:
@@ -12,11 +13,12 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: AI Code Reviewer
-        uses: freeedcom/ai-codereviewer@v2.7.0
+        uses: mattzcarey/code-review-gpt@v0.1.9
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_API_MODEL: "gpt-4o"
-          exclude: "**/*.json, **/*.md"
+          MODEL: "gpt-4o"
