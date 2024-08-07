@@ -24,17 +24,12 @@ formatter = Logfmter(
 
 stream_handler = logging.StreamHandler()
 stream_handler.setFormatter(formatter)
-
-enabled_handlers = [stream_handler]
-
-if os.getenv("LOG_TO_FILE", "False").lower() == "true":
-    file_handler = logging.FileHandler("./logs/manager.log")
-    file_handler.setFormatter(formatter)
-    enabled_handlers.append(file_handler)
+file_handler = logging.FileHandler("./logs/manager.log")
+file_handler.setFormatter(formatter)
 
 logging.basicConfig(
     level=logging.INFO,
-    handlers=enabled_handlers
+    handlers=[stream_handler, file_handler]
 )
 
 # Set a higher logging level for httpx to avoid all GET and POST requests being logged
