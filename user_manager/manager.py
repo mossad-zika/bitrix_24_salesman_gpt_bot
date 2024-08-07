@@ -22,8 +22,6 @@ formatter = Logfmter(
     datefmt='%H:%M:%S %d/%m/%Y'
 )
 
-# Configure logging
-
 stream_handler = logging.StreamHandler()
 stream_handler.setFormatter(formatter)
 
