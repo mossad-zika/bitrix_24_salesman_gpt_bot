@@ -22,14 +22,28 @@ formatter = Logfmter(
     datefmt='%H:%M:%S %d/%m/%Y'
 )
 
+log_to_file = os.getenv('LOG_TO_FILE', 'False') == 'True'
+
+# Configure logging
+formatter = Logfmter(
+    keys=["at", "process", "level", "msg"],
+    mapping={"at": "asctime", "process": "processName", "level": "levelname", "msg": "message"},
+    datefmt='%H:%M:%S %d/%m/%Y'
+)
+
 stream_handler = logging.StreamHandler()
 stream_handler.setFormatter(formatter)
-file_handler = logging.FileHandler("./logs/manager.log")
-file_handler.setFormatter(formatter)
+
+enabled_handlers = [stream_handler]
+
+if log_to_file:
+    file_handler = logging.FileHandler("./logs/manager.log")
+    file_handler.setFormatter(formatter)
+    enabled_handlers.append(file_handler)
 
 logging.basicConfig(
     level=logging.INFO,
-    handlers=[stream_handler, file_handler]
+    handlers=enabled_handlers
 )
 
 # Set a higher logging level for httpx to avoid all GET and POST requests being logged
