@@ -43,7 +43,7 @@ logging.basicConfig(
     level=logging.INFO,
     handlers=enabled_handlers
 )
-# set higher logging level for httpx to avoid all GET and POST requests being logged
+# set a higher logging level for httpx to avoid all GET and POST requests being logged
 logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
