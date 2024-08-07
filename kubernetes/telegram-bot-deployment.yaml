@@ -15,10 +15,10 @@ spec:
     spec:
       initContainers:
         - name: liquibase
-          image: zika13/comrade-chatgpt-bot:liquibase_not_in_use
+          image: ghcr.io/mossad-zika/bitrix_24_salesman_gpt-liquibase:latest
           args: [
             "--changeLogFile=initial.postgres.yaml",
-            "--url=jdbc:postgresql://postgres:5432/bot",
+            "--url=jdbc:postgresql://$(DB_HOST):5432/$(POSTGRES_DB)",
             "update"
           ]
           env:
@@ -45,7 +45,7 @@ spec:
 
       containers:
         - name: telegram-bot
-          image: zika13/comrade-chatgpt-bot:telegram_bot_not_in_use
+          image: ghcr.io/mossad-zika/bitrix_24_salesman_gpt-telegram_bot:latest
           env:
             - name: POSTGRES_USER
               valueFrom:
