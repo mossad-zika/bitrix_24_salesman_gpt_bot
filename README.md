@@ -40,3 +40,4 @@ curl 'http://localhost:5005/allow' -v --location --data-raw 'user_id=105013941'
 - Update Python
 - User-Manager: add 'app' dir like it is done with a bot
 - Fix the "edited text" or "edited image command" bug with `if update.edited_message`
+- Fix Bot and User Manager loggers have different fomatting `logger` vs `process`
