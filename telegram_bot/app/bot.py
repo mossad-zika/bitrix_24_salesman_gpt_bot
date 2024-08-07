@@ -22,8 +22,6 @@ customize.markdown_symbol.head_level_1 = "📌"
 customize.markdown_symbol.link = "🔗"
 customize.strict_markdown = True
 
-log_to_file = os.getenv('LOG_TO_FILE', 'False') == 'True'
-
 # Enable logging
 formatter = Logfmter(
     keys=["at", "logger", "level", "msg"],
@@ -36,7 +34,7 @@ stream_handler.setFormatter(formatter)
 
 enabled_handlers = [stream_handler]
 
-if log_to_file:
+if os.getenv("LOG_TO_FILE", "False").lower() == "true":
     file_handler = logging.FileHandler("./logs/bot.log")
     file_handler.setFormatter(formatter)
     enabled_handlers.append(file_handler)
