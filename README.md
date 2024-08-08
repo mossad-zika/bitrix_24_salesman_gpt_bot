@@ -41,6 +41,7 @@ curl 'http://localhost:5005/allow' -v --location --data-raw 'user_id=105013941'
 - User-Manager: add 'app' dir like it is done with a bot
 - Fix the "edited text" or "edited image command" bug with `if update.edited_message`
 - Fix Bot and User Manager loggers have different fomatting `logger` vs `process`
+- remove redundundent `grafana/.env` from gitignore, just `.env` is enough
 - remove
 ```
 # Set a higher logging level for httpx to avoid all GET and POST requests being logged
